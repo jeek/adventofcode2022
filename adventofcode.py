@@ -1,4 +1,4 @@
-"""Advent of Code 2021."""
+"""Advent of Code 2022."""
 
 import unittest
 from collections import defaultdict
@@ -18,14 +18,12 @@ TESTDATA = [
 class TestSequence(unittest.TestCase):
     """Passthrough case. Tests added in main."""
 
-
 def test_generator(i, j):
     """Simple test generator."""
 
     def test(self):
         self.assertEqual(i, j)
     return test
-
 
 if __name__ == '__main__':
     for t in TESTDATA:
