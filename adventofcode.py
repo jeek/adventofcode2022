@@ -9,10 +9,17 @@ from heapq import heappop, heappush
 def problem01(inputfile="01.input", part=1):
     """Problem #1."""
     with open(inputfile) as file:
-        return 0
+        numbers = file.read().split("\n\n")
+        totals = list(map(lambda x: sum(int(i) for i in x.split("\n")), numbers))
+        biggest = max(totals)
+        if part == 1:
+            return biggest
+        else:
+            totals.sort()
+            return sum(totals[-3:])
 
 TESTDATA = [
-    ["Problem_01", problem01, 1, 0, 0, 0, 0]
+    ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370]
 ]
 
 class TestSequence(unittest.TestCase):
