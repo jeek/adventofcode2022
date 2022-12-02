@@ -8,8 +8,7 @@ from heapq import heappop, heappush
 
 def problem01(inputfile="01.input", part=1):
     """Problem #1."""
-    with open(inputfile) as file:
-        return sum(sorted(list(map(lambda x: sum(int(i) for i in x.split("\n")), file.read().split("\n\n"))))[-(part*2-1):])
+    return sum(sorted(list(map(lambda x: sum(int(i) for i in x.split("\n")), open(inputfile).read().split("\n\n"))))[-(part*2-1):])
 
 def problem02(inputfile="02.input", part=1):
     """Problem #2."""
