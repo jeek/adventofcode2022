@@ -41,7 +41,7 @@ def problem02e(inputfile="02.input", part=1):
     return sum(1+("BXCXAXAYBYCYCZAZBZBXCYAZAXBYCZCXAYBZ".find(line[0]+line[2],(part%2)*18)%18)//2 for line in open(inputfile).read().split("\n"))
 
 def problem02f(inputfile="02.input", part=1):
-    """Problem #2, alternate solution."""
+    """Problem #2, alternate solution, based on Shiiyu's."""
     return sum([*map(lambda x:(((4+x[1]-x[0])%3*3)if part==1 else((2+x[0]+x[1])%3+x[1]*2))+x[1]+1,[*map(lambda line:[(ord(line[0])+4)%23,(ord(line[2])+4)%23],open(inputfile).read().splitlines())])])
 
 TESTDATA = [
