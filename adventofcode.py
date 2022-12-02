@@ -26,7 +26,6 @@ def problem02(inputfile="02.input", part=1):
                 me = ["ZXY","XYZ","YZX"]["XYZ".index(me)]["ABC".index(them)]
             oldscore = score
             score += " XYZ".index(me) + (6 if "ABC".index(them)=="YZX".index(me) else 3 if "ABC".index(them)=="XYZ".index(me) else 0)
-            print(part, score-oldscore, them, oldme)
         return score
 
 TESTDATA = [
