@@ -21,10 +21,8 @@ def problem02(inputfile="02.input", part=1):
         score = 0
         for line in [i for i in open(inputfile).read().split("\n")]:
             them, me = line.split(" ")
-            oldme = me
             if part == 2:
                 me = ["ZXY","XYZ","YZX"]["XYZ".index(me)]["ABC".index(them)]
-            oldscore = score
             score += " XYZ".index(me) + (6 if "ABC".index(them)=="YZX".index(me) else 3 if "ABC".index(them)=="XYZ".index(me) else 0)
         return score
 
