@@ -36,6 +36,9 @@ def problem02d(inputfile="02.input", part=1):
     """Problem #2, alternate solution."""
     return sum([*map(lambda line:[*map(lambda x:ord(x)%47,'OZJ6XYEBP7]\=RDK3[AS')].index(part*ord(line[0])*ord(line[2])%47)//2,open(inputfile).read().splitlines())])
 
+def problem02e(inputfile="02.input", part=1):
+    return sum(1+("BXCXAXAYBYCYCZAZBZBXCYAZAXBYCZCXAYBZ".find(line[0]+line[2],(part%2)*18)%18)//2 for line in open(inputfile).read().split("\n"))
+
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
     ["Problem_02", problem02, 2, 15, 12, 11150, 8295],
@@ -43,6 +46,7 @@ TESTDATA = [
     ["Problem_02b", problem02b, 2, 15, 12, 11150, 8295],
     ["Problem_02c", problem02c, 2, 15, 12, 11150, 8295],
     ["Problem_02d", problem02d, 2, 15, 12, 11150, 8295],
+    ["Problem_02e", problem02e, 2, 15, 12, 11150, 8295],
 ]
 
 class TestSequence(unittest.TestCase):
