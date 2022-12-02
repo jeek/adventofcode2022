@@ -11,8 +11,15 @@ def problem01(inputfile="01.input", part=1):
     with open(inputfile) as file:
         return sum(sorted(list(map(lambda x: sum(int(i) for i in x.split("\n")), file.read().split("\n\n"))))[-(part*2-1):])
 
+def problem02(inputfile="02.input", part=1):
+    """Problem #2."""
+    with open(inputfile) as file:
+        data = [int(i) for i in file.read().split("\n")]
+        return data[0]
+
 TESTDATA = [
-    ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370]
+    ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
+    ["Problem_02", problem02, 2, 0, 0, 0, 0]
 ]
 
 class TestSequence(unittest.TestCase):
