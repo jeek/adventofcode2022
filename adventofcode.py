@@ -1,6 +1,7 @@
 """Advent of Code 2022."""
 
 import unittest
+import string
 from collections import defaultdict
 from copy import copy
 from itertools import product, permutations
@@ -51,18 +52,18 @@ def problem03(inputfile="03.input", part=1):
     if part == 1:
         for i in data:
             for j in set(i[:len(i)//2]) & set(i[len(i)//2:]):
-                total += "0abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".index(j)
+                total += ("0"+string.ascii_letters).index(j)
         return total
     i = 0
     while i < len(data):
         for j in (set(data[i]) & set(data[i+1]) & set(data[i+2])):
-            total += "0abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".index(j)
+            total += ("0"+string.ascii_letters).index(j)
         i += 3
     return total
 
 def problem03a(inputfile="03.input", part=1):
     """Problem #3, alternate solution."""
-    return (sum([*map(lambda x:"0abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".index(list(x)[0]),[*map(lambda line:set(line[:len(line)//2])&set(line[len(line)//2:]),open(inputfile).read().split("\n"))])]))if part==1 else(sum([*map(lambda data:sum(["0abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".index(list(set(data[i-i%3])&set(data[i-i%3+1])&set(data[i-i%3+2]))[0])for i in range(len(data))])//3,[open(inputfile).read().split("\n")])]))
+    return (sum([*map(lambda x:("0"+string.ascii_letters).index(list(x)[0]),[*map(lambda line:set(line[:len(line)//2])&set(line[len(line)//2:]),open(inputfile).read().split("\n"))])]))if part==1 else(sum([*map(lambda data:sum([("0"+string.ascii_letters).index(list(set(data[i-i%3])&set(data[i-i%3+1])&set(data[i-i%3+2]))[0])for i in range(len(data))])//3,[open(inputfile).read().split("\n")])]))
 
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
