@@ -44,6 +44,11 @@ def problem02f(inputfile="02.input", part=1):
     """Problem #2, alternate solution, based on Shiiyu's."""
     return sum([*map(lambda x:(((4+x[1]-x[0])%3*3)if part==1 else((2+x[0]+x[1])%3+x[1]*2))+x[1]+1,[*map(lambda line:[(ord(line[0])+4)%23,(ord(line[2])+4)%23],open(inputfile).read().splitlines())])])
 
+def problem03(inputfile="03.input", part=1):
+    """Problem #3."""
+    data = open(inputfile).read().split("\n")
+    return 0
+
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
     ["Problem_02", problem02, 2, 15, 12, 11150, 8295],
@@ -53,6 +58,7 @@ TESTDATA = [
     ["Problem_02d", problem02d, 2, 15, 12, 11150, 8295],
     ["Problem_02e", problem02e, 2, 15, 12, 11150, 8295],
     ["Problem_02f", problem02f, 2, 15, 12, 11150, 8295],
+    ["Problem_03", problem03, 3, 0, 0, 0, 0],
 ]
 
 class TestSequence(unittest.TestCase):
