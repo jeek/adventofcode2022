@@ -47,7 +47,22 @@ def problem02f(inputfile="02.input", part=1):
 def problem03(inputfile="03.input", part=1):
     """Problem #3."""
     data = open(inputfile).read().split("\n")
-    return 0
+    total = 0
+    if part == 1:
+        for i in data:
+            for j in set(i[:len(i)//2]) & set(i[len(i)//2:]):
+                total += "0abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".index(j)
+        return total
+    i = 0
+    while i < len(data):
+        for j in (set(data[i]) & set(data[i+1]) & set(data[i+2])):
+            total += "0abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".index(j)
+        i += 3
+    return total
+
+def problem03a(inputfile="03.input", part=1):
+    """Problem #3, alternate solution."""
+    return (sum([*map(lambda x:"0abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".index(list(x)[0]),[*map(lambda line:set(line[:len(line)//2])&set(line[len(line)//2:]),open(inputfile).read().split("\n"))])]))if part==1 else(sum([*map(lambda data:sum(["0abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".index(list(set(data[i-i%3])&set(data[i-i%3+1])&set(data[i-i%3+2]))[0])for i in range(len(data))])//3,[open(inputfile).read().split("\n")])]))
 
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
@@ -58,7 +73,8 @@ TESTDATA = [
     ["Problem_02d", problem02d, 2, 15, 12, 11150, 8295],
     ["Problem_02e", problem02e, 2, 15, 12, 11150, 8295],
     ["Problem_02f", problem02f, 2, 15, 12, 11150, 8295],
-    ["Problem_03", problem03, 3, 0, 0, 0, 0],
+    ["Problem_03", problem03, 3, 157, 70, 7980, 2881],
+    ["Problem_03a", problem03a, 3, 157, 70, 7980, 2881],
 ]
 
 class TestSequence(unittest.TestCase):
