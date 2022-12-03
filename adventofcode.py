@@ -65,6 +65,30 @@ def problem03a(inputfile="03.input", part=1):
     """Problem #3, alternate solution."""
     return (sum([*map(lambda x:("0"+string.ascii_letters).index(list(x)[0]),[*map(lambda line:set(line[:len(line)//2])&set(line[len(line)//2:]),open(inputfile).read().split("\n"))])]))if part==1 else(sum([*map(lambda data:sum([("0"+string.ascii_letters).index(list(set(data[i-i%3])&set(data[i-i%3+1])&set(data[i-i%3+2]))[0])for i in range(len(data))])//3,[open(inputfile).read().split("\n")])]))
 
+def problem03b(inputfile="03.input", part=1):
+    """Problem #3, alternate solution."""
+    data = open(inputfile).read().split("\n")
+    total = 0
+    if part == 1:
+        for i in data:
+            for j in set(i[:len(i)//2]) & set(i[len(i)//2:]):
+                total += (ord(j)-96)%58
+        return total
+    i = 0
+    while i < len(data):
+        for j in (set(data[i]) & set(data[i+1]) & set(data[i+2])):
+            total += (ord(j)-96)%58
+        i += 3
+    return total
+
+def problem03c(inputfile="03.input", part=1):
+    """Problem #3, alternate solution."""
+    return (sum([*map(lambda x:(ord(list(x)[0])-96)%58,[*map(lambda line:set(line[:len(line)//2])&set(line[len(line)//2:]),open(inputfile).read().split("\n"))])]))if part==1 else(sum([*map(lambda data:sum([(ord(list(set(data[i-i%3])&set(data[i-i%3+1])&set(data[i-i%3+2]))[0])-96)%58 for i in range(len(data))])//3,[open(inputfile).read().split("\n")])]))
+
+def problem03d(inputfile="03.input", part=1):
+    """Problem #3, alternate solution."""
+    return sum([((ord(list(j)[0])-96)%58) for j in([*map(lambda x:list(map(lambda y:((list(y)[0])),list(x))),list([*map(lambda data:list([0,[set(data[i][:len(data[i])//2])&set(data[i][len(data[i])//2:])],[set(data[i-i%3])&set(data[i-i%3+1])&set(data[i-i%3+2])]][part] for i in range(len(data))),[open(inputfile).read().split("\n")])]))][0])])//[0,1,3][part]
+
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
     ["Problem_02", problem02, 2, 15, 12, 11150, 8295],
@@ -76,6 +100,9 @@ TESTDATA = [
     ["Problem_02f", problem02f, 2, 15, 12, 11150, 8295],
     ["Problem_03", problem03, 3, 157, 70, 7980, 2881],
     ["Problem_03a", problem03a, 3, 157, 70, 7980, 2881],
+    ["Problem_03b", problem03b, 3, 157, 70, 7980, 2881],
+    ["Problem_03c", problem03c, 3, 157, 70, 7980, 2881],
+    ["Problem_03d", problem03d, 3, 157, 70, 7980, 2881],
 ]
 
 class TestSequence(unittest.TestCase):
