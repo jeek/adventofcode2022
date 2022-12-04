@@ -89,6 +89,13 @@ def problem03d(inputfile="03.input", part=1):
     """Problem #3, alternate solution."""
     return sum([((ord(list(j)[0])-96)%58) for j in([*map(lambda x:list(map(lambda y:((list(y)[0])),list(x))),list([*map(lambda data:list([0,[set(data[i][:len(data[i])//2])&set(data[i][len(data[i])//2:])],[set(data[i-i%3])&set(data[i-i%3+1])&set(data[i-i%3+2])]][part] for i in range(len(data))),[open(inputfile).read().split("\n")])]))][0])])//[0,1,3][part]
 
+def problem04(inputfile="04.input", part=1):
+    """Problem #4."""
+    data = open(inputfile).read().split("\n")
+    if part == 1:
+        pass
+    return 0
+
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
     ["Problem_02", problem02, 2, 15, 12, 11150, 8295],
@@ -103,7 +110,8 @@ TESTDATA = [
     ["Problem_03b", problem03b, 3, 157, 70, 7980, 2881],
     ["Problem_03c", problem03c, 3, 157, 70, 7980, 2881],
     ["Problem_03d", problem03d, 3, 157, 70, 7980, 2881],
-]
+    ["Problem_04", problem04, 4, 0, 0, 0, 0],
+][-1:]
 
 class TestSequence(unittest.TestCase):
     """Passthrough case. Tests added in main."""
