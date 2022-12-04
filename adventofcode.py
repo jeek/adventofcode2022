@@ -4,7 +4,7 @@ import unittest
 import string
 from collections import defaultdict
 from copy import copy
-from itertools import product, permutations
+from itertools import product, permutations, islice
 from heapq import heappop, heappush
 
 def problem01(inputfile="01.input", part=1):
