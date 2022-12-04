@@ -107,6 +107,10 @@ def problem04a(inputfile="04.input", part=1):
     """Problem #4, alternate solution."""
     return([*map(lambda x:(x[0]|x[1]in[x[0],x[1]],len(x[0]&x[1])>0)[part-1],[*map(lambda x:[set(range(int(x[0][0]),int(x[0][1])+1)),set(range(int(x[1][0]),int(x[1][1])+1))],[*map(lambda x:[j.split("-")for j in x.split(",")],open(inputfile).read().split("\n"))])])].count(True))
 
+def problem04b(inputfile="04.input", part=1):
+    """Problem #4, alternate solution."""
+    return [*map(lambda x:[x[0][1]>=x[1][0],(x[0][0]<=x[1][0] and x[0][1]>=x[1][1])or(x[0][0]>=x[1][0] and x[0][1]<=x[1][1])][part%2],[*map(lambda x:sorted([[int(j) for j in i.split("-")] for i in x.split(",")],key=lambda y:y[0]), open(inputfile).read().split("\n"))])].count(True)
+
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
     ["Problem_02", problem02, 2, 15, 12, 11150, 8295],
@@ -123,6 +127,7 @@ TESTDATA = [
     ["Problem_03d", problem03d, 3, 157, 70, 7980, 2881],
     ["Problem_04", problem04, 4, 2, 4, 602, 891],
     ["Problem_04a", problem04a, 4, 2, 4, 602, 891],
+    ["Problem_04b", problem04b, 4, 2, 4, 602, 891],
 ]
 
 class TestSequence(unittest.TestCase):
