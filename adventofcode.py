@@ -118,7 +118,7 @@ def problem04c(inputfile="04.input", part=1):
 
 def problem04d(inputfile="04.input", part=1):
     """Problem #4, alternate solution."""
-    return [[(((b>=c)&(a<=d))|((d>=a)&(c<=b))),((a<=c)&(b>=d))|((a>=c)&(b<=d))][part%2]for a,b,c,d in[[int(k) for k in re.split(r"[,-]",i)]for i in open(inputfile).read().split()]].count(True)
+    return [[(c>b)|(a>d),((c<a)|(b<d))&((a<c)|(d<b))][part%2]for a,b,c,d in[[int(k) for k in re.split(r"[,-]",i)]for i in open(inputfile).read().split()]].count(False)
 
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
