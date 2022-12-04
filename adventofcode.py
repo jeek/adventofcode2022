@@ -6,6 +6,7 @@ from collections import defaultdict
 from copy import copy
 from itertools import product, permutations, islice
 from heapq import heappop, heappush
+import re
 
 def problem01(inputfile="01.input", part=1):
     """Problem #1."""
@@ -109,7 +110,15 @@ def problem04a(inputfile="04.input", part=1):
 
 def problem04b(inputfile="04.input", part=1):
     """Problem #4, alternate solution."""
-    return [*map(lambda x:[x[0][1]>=x[1][0],(x[0][0]<=x[1][0] and x[0][1]>=x[1][1])or(x[0][0]>=x[1][0] and x[0][1]<=x[1][1])][part%2],[*map(lambda x:sorted([[int(j) for j in i.split("-")] for i in x.split(",")],key=lambda y:y[0]), open(inputfile).read().split("\n"))])].count(True)
+    return [*map(lambda x:[x[0][1]>=x[1][0],(x[0][0]<=x[1][0] and x[0][1]>=x[1][1])or(x[0][0]>=x[1][0] and x[0][1]<=x[1][1])][part%2],[*map(lambda x:sorted([[int(j) for j in i.split("-")] for i in x.split(",")],key=lambda y:y[0]),open(inputfile).read().split("\n"))])].count(True)
+
+def problem04c(inputfile="04.input", part=1):
+    """Problem #4, alternate solution."""
+    return [[y[0][1]>=y[1][0],(y[0][0]<=y[1][0] and y[0][1]>=y[1][1])or(y[0][0]>=y[1][0] and y[0][1]<=y[1][1])][part%2] for y in [sorted([[int(x[0][0]),int(x[0][1])],[int(x[1][0]),int(x[1][1])]]) for x in [(j[0].split("-"),j[1].split("-")) for j in (i.split(",") for i in open(inputfile).read().split())]]].count(True)
+
+def problem04d(inputfile="04.input", part=1):
+    """Problem #4, alternate solution."""
+    return [[(((b>=c)&(a<=d))|((d>=a)&(c<=b))),((a<=c)&(b>=d))|((a>=c)&(b<=d))][part%2]for a,b,c,d in[[int(k) for k in re.split(r"[,-]",i)]for i in open(inputfile).read().split()]].count(True)
 
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
@@ -128,6 +137,8 @@ TESTDATA = [
     ["Problem_04", problem04, 4, 2, 4, 602, 891],
     ["Problem_04a", problem04a, 4, 2, 4, 602, 891],
     ["Problem_04b", problem04b, 4, 2, 4, 602, 891],
+    ["Problem_04c", problem04c, 4, 2, 4, 602, 891],
+    ["Problem_04d", problem04d, 4, 2, 4, 602, 891],
 ]
 
 class TestSequence(unittest.TestCase):
