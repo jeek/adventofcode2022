@@ -92,9 +92,20 @@ def problem03d(inputfile="03.input", part=1):
 def problem04(inputfile="04.input", part=1):
     """Problem #4."""
     data = open(inputfile).read().split("\n")
-    if part == 1:
-        pass
-    return 0
+    total = [0,0]
+    for i in range(0,len(data)):
+        left, right = data[i].split(",")
+        left = set(range(int(left.split("-")[0]), 1 + int(left.split("-")[1])))
+        right = set(range(int(right.split("-")[0]), 1 + int(right.split("-")[1])))
+        if left | right in [left, right]:
+            total[0] += 1
+        if len(left & right):
+            total[1] += 1
+    return total[part-1]
+
+def problem04a(inputfile="04.input", part=1):
+    """Problem #4, alternate solution."""
+    return([*map(lambda x:(x[0]|x[1]in[x[0],x[1]],len(x[0]&x[1])>0)[part-1],[*map(lambda x:[set(range(int(x[0][0]),int(x[0][1])+1)),set(range(int(x[1][0]),int(x[1][1])+1))],[*map(lambda x:[j.split("-")for j in x.split(",")],open(inputfile).read().split("\n"))])])].count(True))
 
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
@@ -110,8 +121,9 @@ TESTDATA = [
     ["Problem_03b", problem03b, 3, 157, 70, 7980, 2881],
     ["Problem_03c", problem03c, 3, 157, 70, 7980, 2881],
     ["Problem_03d", problem03d, 3, 157, 70, 7980, 2881],
-    ["Problem_04", problem04, 4, 0, 0, 0, 0],
-][-1:]
+    ["Problem_04", problem04, 4, 2, 4, 602, 891],
+    ["Problem_04a", problem04a, 4, 2, 4, 602, 891],
+]
 
 class TestSequence(unittest.TestCase):
     """Passthrough case. Tests added in main."""
