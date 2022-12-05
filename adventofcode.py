@@ -120,6 +120,12 @@ def problem04d(inputfile="04.input", part=1):
     """Problem #4, alternate solution."""
     return [[(c>b)|(a>d),((c<a)|(b<d))&((a<c)|(d<b))][part%2]for a,b,c,d in[[int(k) for k in re.split(r"[,-]",i)]for i in open(inputfile).read().split()]].count(False)
 
+def problem05(inputfile="05.input", part=1):
+    """Problem #5."""
+    data = open(inputfile).read().split("\n")
+    total = [0,0]
+    return 0
+
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
     ["Problem_02", problem02, 2, 15, 12, 11150, 8295],
@@ -139,6 +145,7 @@ TESTDATA = [
     ["Problem_04b", problem04b, 4, 2, 4, 602, 891],
     ["Problem_04c", problem04c, 4, 2, 4, 602, 891],
     ["Problem_04d", problem04d, 4, 2, 4, 602, 891],
+    ["Problem_05", problem05, 5, 0, 0, 0, 0],
 ]
 
 class TestSequence(unittest.TestCase):
