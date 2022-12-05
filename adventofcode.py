@@ -4,9 +4,11 @@ import unittest
 import string
 from collections import defaultdict
 from copy import copy
-from itertools import product, permutations, islice
+from itertools import product, permutations, islice, repeat
 from heapq import heappop, heappush
+from numpy import rot90
 import re
+from functools import reduce
 
 def problem01(inputfile="01.input", part=1):
     """Problem #1."""
@@ -122,9 +124,29 @@ def problem04d(inputfile="04.input", part=1):
 
 def problem05(inputfile="05.input", part=1):
     """Problem #5."""
-    data = open(inputfile).read().split("\n")
-    total = [0,0]
-    return 0
+    data1, data2 = open(inputfile).read().split("\n\n")
+    columns = [[] for i in range(round(len(data1)/4))]
+    for k in data1.split("\n"):
+        for j in range(0, len(k), 4):
+            if "[" in k[j:j+4]:
+                columns[j//4].insert(0,k[j+1])
+    for line in data2.split("\n"):
+        _, i, _, j, _, k = line.split(" ")
+        i, j, k = (int(m) for m in [i, j, k])
+        if part == 1:
+            for l in range(i):
+                columns[k-1].append(columns[j-1].pop())
+        else:
+            temp = []
+            for l in range(i):
+                temp.append(columns[j-1].pop())
+            for l in range(i):
+                columns[k-1].append(temp.pop())
+    return "".join((i[-1] if len(i)>0 else "") for i in columns)
+
+def problem05a(inputfile="05.input", part=1):
+    """Problem #5, alternate solution."""
+    return "".join([i[-1] for i in reduce(lambda x, y: [(x[i] if (int(y.split(" ")[3])-1 != i and int(y.split(" ")[5])-1 != i) else x[i] + x[int(y.split(" ")[3])-1][::-1][:int(y.split(" ")[1])][::-1 if part == 2 else 1] if (int(y.split(" ")[3])-1) != i and (int(y.split(" ")[5])-1) == i else x[i][:-int(y.split(" ")[1])]) for i in range(len(x))], [[list(filter(lambda x: x != " ", i[1:])) for i in list(list(i) for i in rot90(rot90(rot90([list(i) for i in open(inputfile).read().split("\n\n")[0].split("\n")])))) if list(list(i) for i in rot90(rot90(rot90([list(i) for i in open(inputfile).read().split("\n\n")[0].split("\n")])))).index(i)%4==1]] + open(inputfile).read().split("\n\n")[1].split("\n"))])
 
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
@@ -145,7 +167,8 @@ TESTDATA = [
     ["Problem_04b", problem04b, 4, 2, 4, 602, 891],
     ["Problem_04c", problem04c, 4, 2, 4, 602, 891],
     ["Problem_04d", problem04d, 4, 2, 4, 602, 891],
-    ["Problem_05", problem05, 5, 0, 0, 0, 0],
+    ["Problem_05", problem05, 5, "CMZ", "MCD", "RLFNRTNFB", "MHQTLJRLB"],
+    ["Problem_05a", problem05a, 5, "CMZ", "MCD", "RLFNRTNFB", "MHQTLJRLB"],
 ]
 
 class TestSequence(unittest.TestCase):
