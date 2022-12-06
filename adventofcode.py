@@ -147,6 +147,12 @@ def problem05a(inputfile="05.input", part=1):
     """Problem #5, alternate solution."""
     return "".join([i[-1] for i in reduce(lambda x, y: [(x[i] if (int(y.split(" ")[3])-1 != i and int(y.split(" ")[5])-1 != i) else x[i] + x[int(y.split(" ")[3])-1][::-1][:int(y.split(" ")[1])][::-1 if part == 2 else 1] if (int(y.split(" ")[3])-1) != i and (int(y.split(" ")[5])-1) == i else x[i][:-int(y.split(" ")[1])]) for i in range(len(x))], [[list(filter(lambda x: x != " ", i[1:])) for i in list(list(i) for i in list(list(x)[::-1] for x in zip(*[list(i) for i in open(inputfile).read().split("\n\n")[0].split("\n")]))) if list(list(i) for i in list(list(x)[::-1] for x in zip(*[list(i) for i in open(inputfile).read().split("\n\n")[0].split("\n")]))).index(i)%4==1]] + open(inputfile).read().split("\n\n")[1].split("\n"))])
 
+def problem06(inputfile="06.input", part=1):
+    """Problem #6."""
+    data = open(inputfile).read().split("\n")
+    total = 0
+    return -1
+
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
     ["Problem_02", problem02, 2, 15, 12, 11150, 8295],
@@ -168,7 +174,8 @@ TESTDATA = [
     ["Problem_04d", problem04d, 4, 2, 4, 602, 891],
     ["Problem_05", problem05, 5, "CMZ", "MCD", "RLFNRTNFB", "MHQTLJRLB"],
     ["Problem_05a", problem05a, 5, "CMZ", "MCD", "RLFNRTNFB", "MHQTLJRLB"],
-]
+    ["Problem_06", problem06, 6, 0, 0, 0, 0],
+][-1:]
 
 class TestSequence(unittest.TestCase):
     """Passthrough case. Tests added in main."""
