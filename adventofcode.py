@@ -149,7 +149,7 @@ def problem05a(inputfile="05.input", part=1):
 
 def problem06(inputfile="06.input", part=1):
     """Problem #6."""
-    return list((part*10-6 + min([i for i in range(len(data)-3) if part*10-6==len(set(data[i:i+part*10-6]))])) for data in [open(inputfile).read()])[0]
+    return list((part*10-6 + min([i for i in range(len(data)-3) if part*10-6==len(set(data[i:i+part*10-6]))])) for data in open(inputfile).read().split("\n"))
 
 def nwise(iterator, n):
     answer = tee(iterator, n)
@@ -158,35 +158,45 @@ def nwise(iterator, n):
             next(answer[i], None)
     return zip(*answer)
 
+def problem06a(inputfile="06.input", part=1):
+    """Problem #6, alternate solution."""
+    return [list(map(lambda x: len(x)==len(set(x)), list(nwise(data, [4,14][part-1])))).index(True) + [4,14][part-1] for data in open(inputfile).read().split("\n")]
+
 def problem06b(inputfile="06.input", part=1):
     """Problem #6, alternate solution."""
-    return list(map(lambda x: len(x)==len(set(x)), list(nwise(open(inputfile).read(), [4,14][part-1])))).index(True) + [4,14][part-1]
+    answer = []
+    datalines = open(inputfile).read().split("\n")
+    for data in datalines:
+        i = 0
+        while i < len(data):
+            good = True
+            j = i
+            while good and j < i + [4,14][part-1]:
+                k = j + 1
+                while good and k < i + [4,14][part-1]:
+                    if data[j] == data[k]:
+                        good = False
+                    k += 1
+                j += 1
+            if good:
+                answer.append(i + [4,14][part-1])
+                i = len(data)
+            i += 1
+    return answer
 
 def problem06c(inputfile="06.input", part=1):
     """Problem #6, alternate solution."""
-    data = open(inputfile).read()
-    i = 0
-    while i < len(data):
-        good = True
-        j = i
-        while good and j < i + [4,14][part-1]:
-            k = j + 1
-            while good and k < i + [4,14][part-1]:
-                if data[j] == data[k]:
-                    good = False
-                k += 1
-            j += 1
-        if good:
-            return i + [4,14][part-1]
-        i += 1
-
-def problem06d(inputfile="06.input", part=1):
-    """Problem #6, alternate solution."""
-    data = open(inputfile).read()
-    for i in range(len(data)):
-        if len(list(j for j in combinations(data[i:i+[4,14][part-1]], 2) if j[0] == j[1])) == 0:
-            return i + [4,14][part-1]
-        i += 1
+    datalines = open(inputfile).read().split("\n")
+    z = 0
+    answer = []
+    for data in datalines:
+        z += 1
+        for i in range(len(data)):
+            if len(list(j for j in combinations(data[i:i+[4,14][part-1]], 2) if j[0] == j[1])) == 0:
+                if len(answer) < z:
+                    answer.append(i + [4,14][part-1])
+            i += 1
+    return answer
 
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
@@ -209,10 +219,10 @@ TESTDATA = [
     ["Problem_04d", problem04d, 4, 2, 4, 602, 891],
     ["Problem_05", problem05, 5, "CMZ", "MCD", "RLFNRTNFB", "MHQTLJRLB"],
     ["Problem_05a", problem05a, 5, "CMZ", "MCD", "RLFNRTNFB", "MHQTLJRLB"],
-    ["Problem_06", problem06, 6, 7, 19, 1480, 2746],
-    ["Problem_06b", problem06b, 6, 7, 19, 1480, 2746],
-    ["Problem_06c", problem06c, 6, 7, 19, 1480, 2746],
-    ["Problem_06d", problem06d, 6, 7, 19, 1480, 2746],
+    ["Problem_06", problem06, 6, [7,5,6,10,11], [19,23,23,29,26], [1480], [2746]],
+    ["Problem_06a", problem06a, 6, [7,5,6,10,11], [19,23,23,29,26], [1480], [2746]],
+    ["Problem_06b", problem06b, 6, [7,5,6,10,11], [19,23,23,29,26], [1480], [2746]],
+    ["Problem_06c", problem06c, 6, [7,5,6,10,11], [19,23,23,29,26], [1480], [2746]],
 ]
 
 class TestSequence(unittest.TestCase):
