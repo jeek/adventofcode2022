@@ -149,9 +149,7 @@ def problem05a(inputfile="05.input", part=1):
 
 def problem06(inputfile="06.input", part=1):
     """Problem #6."""
-    data = open(inputfile).read().split("\n")
-    total = 0
-    return -1
+    return list((part*10-6 + min([i for i in range(len(data)-3) if part*10-6==len(set(data[i:i+part*10-6]))])) for data in [open(inputfile).read()])[0]
 
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
@@ -174,8 +172,8 @@ TESTDATA = [
     ["Problem_04d", problem04d, 4, 2, 4, 602, 891],
     ["Problem_05", problem05, 5, "CMZ", "MCD", "RLFNRTNFB", "MHQTLJRLB"],
     ["Problem_05a", problem05a, 5, "CMZ", "MCD", "RLFNRTNFB", "MHQTLJRLB"],
-    ["Problem_06", problem06, 6, 0, 0, 0, 0],
-][-1:]
+    ["Problem_06", problem06, 6, 7, 19, 1480, 2746],
+]
 
 class TestSequence(unittest.TestCase):
     """Passthrough case. Tests added in main."""
