@@ -198,6 +198,16 @@ def problem06c(inputfile="06.input", part=1):
             i += 1
     return answer
 
+def problem07(inputfile="07.input", part=1):
+    """Problem #7."""
+    data = open(inputfile).read().split("\n")
+    total = 0
+    if part == 1:
+        total = 0
+        for i in data:
+            pass
+    return total
+
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
     ["Problem_02", problem02, 2, 15, 12, 11150, 8295],
@@ -223,7 +233,8 @@ TESTDATA = [
     ["Problem_06a", problem06a, 6, [7,5,6,10,11], [19,23,23,29,26], [1480], [2746]],
     ["Problem_06b", problem06b, 6, [7,5,6,10,11], [19,23,23,29,26], [1480], [2746]],
     ["Problem_06c", problem06c, 6, [7,5,6,10,11], [19,23,23,29,26], [1480], [2746]],
-]
+    ["Problem_07", problem07, 7, 0, 0, 0, 0],
+][-1:]
 
 class TestSequence(unittest.TestCase):
     """Passthrough case. Tests added in main."""
