@@ -248,25 +248,33 @@ def problem07a(inputfile="07.input", part=1):
     for i in open(inputfile).read().split("\n"):
         if i[:4] == "$ cd":
             if i != "$ cd ..":
-                ind += 1
                 stack.append([])
             else:
                 answers.append(sum(stack[-1]))
-                for j in stack[-1]:
-                    stack[-2] = stack[-2] + [j]
-                stack.pop()
-                ind -= 1
+                stack[-1] = stack[-2] + [sum(stack.pop())]
         else:
             if i[:3] != "dir" and i[0] != "$":
                 stack[-1].append(int(i.split(" ")[0]))
     while len(stack) > 1:
         answers.append(sum(stack[-1]))
-        stack[-2] = stack[-2] + [sum(stack[-1])]
-        stack.pop()
+        stack[-1] = stack[-2] + [sum(stack.pop())]
     answers = answers + [sum(stack[0])]
     if part == 1:
         return sum(i for i in answers if i < 100000)
     return min(i for i in answers if 70000000 - max(answers) + i > 30000000)
+
+#def problem07b(inputfile="07.input", part=1):
+#    """Problem #7, alternate solution."""
+#    print(reduce(lambda x, y: [x[0] + [[]], x[1]] if y[:min(4, len(y))] == "$ cd" and y != "$ cd .." else [x[0][:-1] + [x[0][-1] + [int(y.split(" ")[0])]], x[1]] if re.match(r"\d+ \S+", y) else x if y[:3] == "dir" else [x[0][:-2] + sum(x[0][-1]), x[1] + [sum(x[0][-1])]], [[[[0]],[]]] + open(inputfile).read().split("\n")))
+#    return reduce(lambda x, y: [x[0] + [[]], x[1]] if y[:min(4, len(y))] == "$ cd" and y != "$ cd .." else [x[0][:-1] + [x[0][-1] + [int(y.split(" ")[0])]], x[1]] if re.match(r"\d+ \S+", y) else x if y[:3] == "dir" else [x[0][:-2] + sum(x[0][-1]), x[1] + [sum(x[0][-1])]], [[[[0]],[]]] + open(inputfile).read().split("\n"))
+
+def problem08(inputfile="08.input", part=1):
+    """Problem #8."""
+    data = open(inputfile).read().split("\n")
+    total = 0
+    if part == 1:
+        return total
+    return total
 
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
@@ -295,6 +303,8 @@ TESTDATA = [
     ["Problem_06c", problem06c, 6, [7,5,6,10,11], [19,23,23,29,26], [1480], [2746]],
     ["Problem_07", problem07, 7, 95437, 24933642, 1297159, 3866390],
     ["Problem_07a", problem07a, 7, 95437, 24933642, 1297159, 3866390],
+#    ["Problem_07b", problem07b, 7, 95437, 24933642, 1297159, 3866390],
+    ["Problem_08", problem08, 8, 0, 0, 0, 0],
 ]
 
 class TestSequence(unittest.TestCase):
