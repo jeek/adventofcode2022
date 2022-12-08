@@ -201,12 +201,72 @@ def problem06c(inputfile="06.input", part=1):
 def problem07(inputfile="07.input", part=1):
     """Problem #7."""
     data = open(inputfile).read().split("\n")
+    path = ""
+    files = {}
+    dirs = {}
     total = 0
+    for i in data:
+        if i[:3] != "dir":
+            if i[:4] == "$ cd":
+                if i == "$ cd /":
+                    path = "/"
+                else:
+                    if i == "$ cd ..":
+                        path = "/".join(path.split("/")[:-1]).replace("//", "/")
+                    else:
+                        path = (path + "/" + i[5:]).replace("//", "/")
+            else:
+                if i != "$ ls":
+                    a, b = i.split(" ")
+                    files[path + b] = int(a)
+                    temp = path
+                    if path not in dirs:
+                        dirs[path] = 0
+                    dirs["/"] += int(a)
+                    if path != "/":
+                        while len(temp) > 1:
+                            if temp not in dirs:
+                                dirs[temp] = 0
+                            dirs[temp] += int(a)
+                            temp = temp.split("/")
+                            temp.pop()
+                            temp = ("/".join(temp)).replace("//", "/")
+    for i in dirs:
+        if dirs[i] < 100000:
+            total += dirs[i]
+    if part==1:
+        return total
+    totaldisk = 70000000 - dirs["/"]
+    neededdisk = 30000000
+    return min(i for i in dirs.values() if totaldisk + i > neededdisk)
+
+def problem07a(inputfile="07.input", part=1):
+    """Problem #7, alternate solution."""
+    stack = [[]]
+    answers = []
+    ind = 1
+    for i in open(inputfile).read().split("\n"):
+        if i[:4] == "$ cd":
+            if i != "$ cd ..":
+                ind += 1
+                stack.append([])
+            else:
+                answers.append(sum(stack[-1]))
+                for j in stack[-1]:
+                    stack[-2] = stack[-2] + [j]
+                stack.pop()
+                ind -= 1
+        else:
+            if i[:3] != "dir" and i[0] != "$":
+                stack[-1].append(int(i.split(" ")[0]))
+    while len(stack) > 1:
+        answers.append(sum(stack[-1]))
+        stack[-2] = stack[-2] + [sum(stack[-1])]
+        stack.pop()
+    answers = answers + [sum(stack[0])]
     if part == 1:
-        total = 0
-        for i in data:
-            pass
-    return total
+        return sum(i for i in answers if i < 100000)
+    return min(i for i in answers if 70000000 - max(answers) + i > 30000000)
 
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
@@ -233,8 +293,9 @@ TESTDATA = [
     ["Problem_06a", problem06a, 6, [7,5,6,10,11], [19,23,23,29,26], [1480], [2746]],
     ["Problem_06b", problem06b, 6, [7,5,6,10,11], [19,23,23,29,26], [1480], [2746]],
     ["Problem_06c", problem06c, 6, [7,5,6,10,11], [19,23,23,29,26], [1480], [2746]],
-    ["Problem_07", problem07, 7, 0, 0, 0, 0],
-][-1:]
+    ["Problem_07", problem07, 7, 95437, 24933642, 1297159, 3866390],
+    ["Problem_07a", problem07a, 7, 95437, 24933642, 1297159, 3866390],
+]
 
 class TestSequence(unittest.TestCase):
     """Passthrough case. Tests added in main."""
