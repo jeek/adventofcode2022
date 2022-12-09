@@ -271,10 +271,86 @@ def problem07a(inputfile="07.input", part=1):
 def problem08(inputfile="08.input", part=1):
     """Problem #8."""
     data = open(inputfile).read().split("\n")
+    visible = []
+    for i in data:
+        visible.append([])
+        for j in i:
+            visible[-1].append(0)
     total = 0
     if part == 1:
-        return total
-    return total
+        for i in range(len(data)):
+            temp = list(int(j) for j in data[i])
+            best = temp[0]
+            visible[i][0] = 1
+            for j in range(len(data[i])):
+                if temp[j] > best:
+                    visible[i][j] = 1
+                    best = temp[j]
+            temp = list(int(j) for j in data[i])[::-1]
+            best = temp[0]
+            visible[i][-1] = 1
+            for j in range(len(data[i])):
+                if temp[j] > best:
+                    visible[i][len(data[i])-1-j] = 1
+                    best = temp[j]
+        data = [[data[j][i] for j in range(len(data))] for i in range(len(data[0])-1,-1,-1)]
+        visible = [[visible[j][i] for j in range(len(visible))] for i in range(len(visible[0])-1,-1,-1)]
+        for i in range(len(data)):
+            temp = list(int(j) for j in data[i])
+            best = temp[0]
+            visible[i][0] = 1
+            for j in range(len(data[i])):
+                if temp[j] > best:
+                    visible[i][j] = 1
+                    best = temp[j]
+            temp = list(int(j) for j in data[i])[::-1]
+            best = temp[0]
+            visible[i][-1] = 1
+            for j in range(len(data[i])):
+                if temp[j] > best:
+                    visible[i][len(data[i])-1-j] = 1
+                    best = temp[j]
+        return sum(sum(j) for j in visible)
+    visible = []
+    for i in data:
+        visible.append([])
+        for j in i:
+            visible[-1].append(0)
+    best = 0
+    for i in range(len(data)):
+        for j in range(len(data[i])):
+            a, b, c, d = (1 if i != 0 else 0),(1 if i != len(data)-1 else 0),(1 if j != 0 else 0),(1 if j != len(data[i])-1 else 0)
+            ii, jj = i-1, j
+            while ii > 0 and int(data[i][j]) > int(data[ii][jj]):
+                ii -= 1
+                a += 1
+            ii, jj = i+1, j
+            while ii + 1< len(data) and int(data[i][j]) > int(data[ii][jj]):
+                ii += 1
+                b += 1
+            ii, jj = i, j-1
+            while jj > 0 and int(data[i][j]) > int(data[ii][jj]):
+                jj -= 1
+                c += 1
+            ii, jj = i, j+1
+            while jj + 1 < len(data) and int(data[i][j]) > int(data[ii][jj]):
+                jj += 1
+                d += 1
+            best = max(a * b * c * d, best)
+    return best
+
+def problem08a(inputfile="08.input", part=1):
+    """Problem #8, alternate solution."""
+    data = [[int(i) for i in j] for j in open(inputfile).read().split("\n")]
+    visible, finish, best = [[(part-1) for j in range(len(data[0]))] for i in range(len(data))], [sum,max][part-1], 0
+    for _, i, j in product(range(len("data")), range(len(data)), range(len(data[0]))):
+        if part == 2:
+            l, m = i != 0, i - 1
+            while m > 0 and data[i][j] > data[m][j]: m, l = m - 1, l + 1
+            visible[i][j] *= l
+        else: best, visible[i][j] = [best, data[i][j]][j == 0 or data[i][j] > best], data[i][j] > best or j == 0 or visible[i][j]
+        if i+1==len(data) and j+1==len(data[0]): data, visible = [[data[j][i] for j in range(len(data))] for i in range(len(data[0])-1,-1,-1)], [[visible[j][i] for j in range(len(visible))] for i in range(len(visible[0])-1,-1,-1)]
+    return finish(finish(j) for j in visible)
 
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
@@ -304,7 +380,8 @@ TESTDATA = [
     ["Problem_07", problem07, 7, 95437, 24933642, 1297159, 3866390],
     ["Problem_07a", problem07a, 7, 95437, 24933642, 1297159, 3866390],
 #    ["Problem_07b", problem07b, 7, 95437, 24933642, 1297159, 3866390],
-    ["Problem_08", problem08, 8, 0, 0, 0, 0],
+    ["Problem_08", problem08, 8, 21, 8, 1690, 535680],
+    ["Problem_08a", problem08a, 8, 21, 8, 1690, 535680],
 ]
 
 class TestSequence(unittest.TestCase):
