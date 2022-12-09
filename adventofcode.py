@@ -352,6 +352,14 @@ def problem08a(inputfile="08.input", part=1):
         if i+1==len(data) and j+1==len(data[0]): data, visible = [[data[j][i] for j in range(len(data))] for i in range(len(data[0])-1,-1,-1)], [[visible[j][i] for j in range(len(visible))] for i in range(len(visible[0])-1,-1,-1)]
     return finish(finish(j) for j in visible)
 
+def problem09(inputfile="09.input", part=1):
+    """Problem #9."""
+    data = open(inputfile).read().split("\n")
+    total = 0
+    if part == 1:
+        total = 0
+    return total
+
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
     ["Problem_02", problem02, 2, 15, 12, 11150, 8295],
@@ -382,6 +390,7 @@ TESTDATA = [
 #    ["Problem_07b", problem07b, 7, 95437, 24933642, 1297159, 3866390],
     ["Problem_08", problem08, 8, 21, 8, 1690, 535680],
     ["Problem_08a", problem08a, 8, 21, 8, 1690, 535680],
+    ["Problem_09", problem09, 9, 0, 0, 0, 0],
 ]
 
 class TestSequence(unittest.TestCase):
