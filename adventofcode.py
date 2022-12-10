@@ -365,6 +365,9 @@ def problem09(inputfile="09.input", part=1):
             seen.add(tuple(head[rope-1]))
     return len(seen)
 
+def problem10(inputfile="10.input", part=1):
+    """Problem #10."""
+    data = open(inputfile).read().split("\n")
 
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
@@ -397,6 +400,7 @@ TESTDATA = [
     ["Problem_08", problem08, 8, 21, 8, 1690, 535680],
     ["Problem_08a", problem08a, 8, 21, 8, 1690, 535680],
     ["Problem_09", problem09, 9, 13, 1, 5513, 2427],
+    ["Problem_10", problem10, 10, 0, 0, 0, 0],
 ][-1:]
 
 class TestSequence(unittest.TestCase):
