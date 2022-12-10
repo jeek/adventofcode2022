@@ -354,11 +354,17 @@ def problem08a(inputfile="08.input", part=1):
 
 def problem09(inputfile="09.input", part=1):
     """Problem #9."""
-    data = open(inputfile).read().split("\n")
-    total = 0
-    if part == 1:
-        total = 0
-    return total
+    rope, head, seen = [2, 10][part-1], [[0, 0] for i in range([2, 10][part-1]+1)], set()
+    for i, j in [k.split(" ") for k in open(inputfile).read().split("\n")]:
+        for _ in range(int(j)):
+            head[-1] = {"U":[head[0][0]-2, head[0][1]],"D":[head[0][0]+2, head[0][1]],"L":[head[0][0], head[0][1]-2],"R":[head[0][0],head[0][1]+2]}[i]
+            for k in range(rope):
+                if ((abs(head[k-1][0]-head[k][0])>1 or abs(head[k-1][1]-head[k][1])>1) and (head[k-1][0]!=head[k][0]) and (head[k-1][1]!=head[k][1])): head[k][0], head[k][1] = head[k][0]+1 if head[k-1][0] > head[k][0] else head[k][0]-1,head[k][1]+1 if head[k-1][1] > head[k][1] else head[k][1]-1
+                if (abs(head[k-1][0]-head[k][0])>1): head[k][0] += 1 if head[k-1][0] > head[k][0] else -1
+                if (abs(head[k-1][1]-head[k][1])>1): head[k][1] += 1 if head[k-1][1] > head[k][1] else -1
+            seen.add(tuple(head[rope-1]))
+    return len(seen)
+
 
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
@@ -390,8 +396,8 @@ TESTDATA = [
 #    ["Problem_07b", problem07b, 7, 95437, 24933642, 1297159, 3866390],
     ["Problem_08", problem08, 8, 21, 8, 1690, 535680],
     ["Problem_08a", problem08a, 8, 21, 8, 1690, 535680],
-    ["Problem_09", problem09, 9, 0, 0, 0, 0],
-]
+    ["Problem_09", problem09, 9, 13, 1, 5513, 2427],
+][-1:]
 
 class TestSequence(unittest.TestCase):
     """Passthrough case. Tests added in main."""
