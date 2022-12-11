@@ -8,6 +8,8 @@ from itertools import product, permutations, islice, repeat, tee, combinations
 from heapq import heappop, heappush
 import re
 from functools import reduce
+import sys
+
 
 def problem01(inputfile="01.input", part=1):
     """Problem #1."""
@@ -426,11 +428,22 @@ def problem10(inputfile="10.input", part=1):
     return None
 
 def problem11(inputfile="11.input", part=1):
+    #sys.set_int_max_str_digits(1000000)
     """Problem #11."""
-    data = [i for i in open(inputfile).read().split("\n")]
+    data, monkeys = [i for i in open(inputfile).read().split("\n\n")], []
     for i in data:
-        pass
-    return 0
+        lines = i.split("\n")
+        monkeys.append({"items": [int(k) for k in list(eval("[" + lines[1][18:] + "]"))], "op": lines[2][19:], "div": int(lines[3][21:]), "mtrue": int(lines[4][29:]), "mfalse": int(lines[5][30:])})
+    scores = [0 for i in range(len(monkeys))]
+    for i in range([20,10000][part-1]):
+        for j in range(0, len(monkeys)):
+            scores[j] += len(monkeys[j]["items"])
+            while len(monkeys[j]["items"]):
+                item = monkeys[j]["items"].pop(0)
+                opsplit = monkeys[j]["op"].split(" ")
+                item = (((item if opsplit[0] == "old" else int(opsplit[0])) + (item if opsplit[2] == "old" else int(opsplit[2])) if opsplit[1] == "+" else (item if opsplit[0] == "old" else int(opsplit[0])) * (item if opsplit[2] == "old" else int(opsplit[2]))) // [3,1][part-1]) % reduce(lambda x, y: x * y, [i["div"] for i in monkeys])
+                monkeys[monkeys[j]["mtrue"] if item % monkeys[j]["div"] == 0 else monkeys[j]["mfalse"]]["items"].append(item)
+    return reduce(lambda a,b: a*b, sorted(scores)[-2:])
 
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
@@ -464,7 +477,7 @@ TESTDATA = [
     ["Problem_08a", problem08a, 8, 21, 8, 1690, 535680],
     ["Problem_09", problem09, 9, 13, 1, 5513, 2427],
     ["Problem_10", problem10, 10, 13140, None, 14820, None],
-    ["Problem_11", problem11, 11, 0, 0, 0, 0],
+    ["Problem_11", problem11, 11, 10605, 2713310158, 56595, 15693274740],
 ][-1:]
 
 class TestSequence(unittest.TestCase):
