@@ -367,7 +367,63 @@ def problem09(inputfile="09.input", part=1):
 
 def problem10(inputfile="10.input", part=1):
     """Problem #10."""
-    data = open(inputfile).read().split("\n")
+    data = [i for i in open(inputfile).read().split("\n")] + [[],[]]
+    queue = [[] for i in range(2000)]
+    signals = []
+    totals = [0,1]
+    total = 1
+    z = 1
+    i = 0
+    zz = 19.9
+    while i < len(data):
+        if data[i] == "noop":
+            totals.append(totals[-1])
+        if data[i][:4] == "addx":
+            totals.append(totals[-1])
+            totals.append(totals[-1] + int(data[i][5:]))
+        i += 1
+ #   print(totals[19:22])
+ #   print(totals)
+    signals = [totals[i]*i for i in range(len(totals)) if (i + 20)%40==0]
+    if part == 1:
+        return(sum(signals))
+    data = [i for i in open(inputfile).read().split("\n")] + [[],[]]
+    queue = [[] for i in range(2000)]
+    signals = []
+    totals = [0,1]
+    total = 1
+    z = 1
+    i = 0
+    zz = 19.9
+    while i < len(data):
+        if data[i] == "noop":
+            totals.append(totals[-1])
+        if data[i][:4] == "addx":
+            totals.append(totals[-1])
+            totals.append(totals[-1] + int(data[i][5:]))
+        i += 1
+ #   print(totals[19:22])
+ #   print(totals)
+    signals = [totals[i]*i for i in range(len(totals)) if (i + 20)%40==0]
+ #   print(totals)
+    screen = [[" " for i in range(40)] for j in range(6)]
+#    totals.pop(0)
+#    totals.pop(0)
+    for i in range(240):
+        a, b, c = (i // 3 * 3)%40, (i // 3 * 3 + 1)%40, (i // 3 * 3 + 2)%40
+        a,b,c = i%40,i%40-2,i%40-1
+#        print(i, a, b, c, totals[i])
+        try:
+            if totals[i] in [a,b,c]: #]+([totals[i+1]] if i < 39 else [totals[i]]))+([totals[i+2]] if i+1 < 39 else [totals[i]]):
+                screen[i//40][i%40]="X"
+        except:
+            pass
+    if inputfile == "10.input":
+#        print(screen)
+        for i in screen:
+            pass
+#            print("".join(i))
+    return None
 
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
@@ -400,7 +456,7 @@ TESTDATA = [
     ["Problem_08", problem08, 8, 21, 8, 1690, 535680],
     ["Problem_08a", problem08a, 8, 21, 8, 1690, 535680],
     ["Problem_09", problem09, 9, 13, 1, 5513, 2427],
-    ["Problem_10", problem10, 10, 0, 0, 0, 0],
+    ["Problem_10", problem10, 10, 13140, None, 14820, None],
 ][-1:]
 
 class TestSequence(unittest.TestCase):
