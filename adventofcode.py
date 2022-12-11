@@ -425,6 +425,13 @@ def problem10(inputfile="10.input", part=1):
 #            print("".join(i))
     return None
 
+def problem11(inputfile="11.input", part=1):
+    """Problem #11."""
+    data = [i for i in open(inputfile).read().split("\n")]
+    for i in data:
+        pass
+    return 0
+
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
     ["Problem_02", problem02, 2, 15, 12, 11150, 8295],
@@ -457,6 +464,7 @@ TESTDATA = [
     ["Problem_08a", problem08a, 8, 21, 8, 1690, 535680],
     ["Problem_09", problem09, 9, 13, 1, 5513, 2427],
     ["Problem_10", problem10, 10, 13140, None, 14820, None],
+    ["Problem_11", problem11, 11, 0, 0, 0, 0],
 ][-1:]
 
 class TestSequence(unittest.TestCase):
