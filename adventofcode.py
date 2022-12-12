@@ -8,8 +8,8 @@ from itertools import product, permutations, islice, repeat, tee, combinations
 from heapq import heappop, heappush
 import re
 from functools import reduce
-import sys
-
+import math as e
+from math import log as ln, e as e
 
 def problem01(inputfile="01.input", part=1):
     """Problem #1."""
@@ -428,22 +428,16 @@ def problem10(inputfile="10.input", part=1):
     return None
 
 def problem11(inputfile="11.input", part=1):
-    #sys.set_int_max_str_digits(1000000)
     """Problem #11."""
-    data, monkeys = [i for i in open(inputfile).read().split("\n\n")], []
-    for i in data:
-        lines = i.split("\n")
-        monkeys.append({"items": [int(k) for k in list(eval("[" + lines[1][18:] + "]"))], "op": lines[2][19:], "div": int(lines[3][21:]), "mtrue": int(lines[4][29:]), "mfalse": int(lines[5][30:])})
-    scores = [0 for i in range(len(monkeys))]
-    for i in range([20,10000][part-1]):
-        for j in range(0, len(monkeys)):
-            scores[j] += len(monkeys[j]["items"])
-            while len(monkeys[j]["items"]):
-                item = monkeys[j]["items"].pop(0)
-                opsplit = monkeys[j]["op"].split(" ")
-                item = (((item if opsplit[0] == "old" else int(opsplit[0])) + (item if opsplit[2] == "old" else int(opsplit[2])) if opsplit[1] == "+" else (item if opsplit[0] == "old" else int(opsplit[0])) * (item if opsplit[2] == "old" else int(opsplit[2]))) // [3,1][part-1]) % reduce(lambda x, y: x * y, [i["div"] for i in monkeys])
-                monkeys[monkeys[j]["mtrue"] if item % monkeys[j]["div"] == 0 else monkeys[j]["mfalse"]]["items"].append(item)
-    return reduce(lambda a,b: a*b, sorted(scores)[-2:])
+    m,r=[[[int(i)for i in eval("["+l[1][18:]+"]")],l[2][19:].split(" "),int(l[3][21:]),int(l[4][29:]),int(l[5][30:]),0] for l in[i.split("\n")for i in open(inputfile).read().split("\n\n")]],range
+    for _,i in product(r(int(5e6*e**(-ln(2.5e5)/part))),r(len(m))):
+        m[i][5],m[i][0]=(m[i][5]+len(m[i][0])),[(((m[i][0][j]if m[i][1][0]=="old"else int(m[i][1][0]))+(m[i][0][j]if m[i][1][2]=="old"else int(m[i][1][2]))if m[i][1][1]=="+"else(m[i][0][j]if m[i][1][0]=="old"else int(m[i][1][0]))*(m[i][0][j]if m[i][1][2]=="old"else int(m[i][1][2])))//(5-2*part))%reduce(lambda x,y:x*y,[k[2]for k in m])for j in r(len(m[i][0]))]
+        [m[m[i][4 if m[i][0][0]%m[i][2]else 3]][0].append(m[i][0].pop(0))for _ in r(len(m[i][0]))]
+    return reduce(lambda a,b:a*b,sorted([i[5]for i in m])[-2:])
+
+def problem12(inputfile="12.input", part=1):
+    """Problem #12."""
+    data = open(inputfile).read().split("\n")
 
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
@@ -478,6 +472,7 @@ TESTDATA = [
     ["Problem_09", problem09, 9, 13, 1, 5513, 2427],
     ["Problem_10", problem10, 10, 13140, None, 14820, None],
     ["Problem_11", problem11, 11, 10605, 2713310158, 56595, 15693274740],
+    ["Problem_12", problem12, 12, 0, 0, 0, 0],
 ][-1:]
 
 class TestSequence(unittest.TestCase):
