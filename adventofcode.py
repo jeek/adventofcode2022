@@ -437,7 +437,19 @@ def problem11(inputfile="11.input", part=1):
 
 def problem12(inputfile="12.input", part=1):
     """Problem #12."""
+    map, start, goal, best = [[ord(i)-ord("a") for i in j] for j in open(inputfile).read().split("\n")], ord("S") - ord("a"), ord("E") - ord("a"), 10**99
+    starti, goali, width, height = [(start in i) for i in map].index(True), [(goal in i) for i in map].index(True), len(map[0]), len(map)
+    startj, goalj, dist = map[starti].index(start), map[goali].index(goal), [[10**99 for j in range(width)] for i in range(height)]
+    map[goali][goalj], map[starti][startj], dist[goali][goalj]=ord("z")-ord("a"), 0, 0
+    for _, i, j in product(range(height * width), range(height), range(width)): dist[max(0, i-1)][j],dist[min(height-1,i+1)][j],dist[i][max(0,j-1)],dist[i][min(width-1,j+1)] = min(dist[i][j]+1, dist[max(0, i-1)][j]) if i > 0 and map[i][j] - 1 <= map[max(0, i-1)][j] else dist[max(0, i-1)][j], min(dist[i][j]+1, dist[min(height-1,i+1)][j]) if i < height-1 and map[i][j] - 1 <= map[min(height-1,i+1)][j] else dist[min(height-1,i+1)][j], min(dist[i][j]+1, dist[i][max(0,j-1)]) if j > 0 and map[i][j] - 1 <= map[i][max(0,j-1)] else dist[i][max(0,j-1)], min(dist[i][j]+1, dist[i][min(width-1,j+1)]) if j < width-1 and map[i][j] - 1 <= map[i][min(width-1,j+1)] else dist[i][min(width-1,j+1)]
+    if part == 1: return dist[starti][startj]
+    for i, j in product(range(height), range(width)): best = min(best, dist[i][j]) if map[i][j] == 0 else best
+    return best
+
+def problem13(inputfile="13.input", part=1):
+    """Problem #13."""
     data = open(inputfile).read().split("\n")
+    return 0
 
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
@@ -472,14 +484,15 @@ TESTDATA = [
     ["Problem_09", problem09, 9, 13, 1, 5513, 2427],
     ["Problem_10", problem10, 10, 13140, None, 14820, None],
     ["Problem_11", problem11, 11, 10605, 2713310158, 56595, 15693274740],
-    ["Problem_12", problem12, 12, 0, 0, 0, 0],
-][-1:]
+    ["Problem_12", problem12, 12, 31, 29, 456, 454],
+    ["Problem_13", problem13, 13, 0, 0, 0, 0],
+]
 
 class TestSequence(unittest.TestCase):
     """Passthrough case. Tests added in main."""
 
 def test_generator(i, j):
-    """Simple test generator."""
+    """Simple test generator."""    
 
     def test(self):
         self.assertEqual(i, j)
