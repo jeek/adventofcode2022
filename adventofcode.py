@@ -7,7 +7,7 @@ from copy import copy
 from itertools import product, permutations, islice, repeat, tee, combinations
 from heapq import heappop, heappush
 import re
-from functools import reduce
+from functools import reduce, cmp_to_key
 import math as e
 from math import log as ln, e as e
 
@@ -327,7 +327,7 @@ def problem08(inputfile="08.input", part=1):
                 ii -= 1
                 a += 1
             ii, jj = i+1, j
-            while ii + 1< len(data) and int(data[i][j]) > int(data[ii][jj]):
+            while ii + 1 < len(data) and int(data[i][j]) > int(data[ii][jj]):
                 ii += 1
                 b += 1
             ii, jj = i, j-1
@@ -448,8 +448,18 @@ def problem12(inputfile="12.input", part=1):
 
 def problem13(inputfile="13.input", part=1):
     """Problem #13."""
-    data = open(inputfile).read().split("\n")
-    return 0
+    def compare(left, right, good=0, i=0):
+        while good == 0 and i < len(left): good, i = 1 if len(right) <= i else compare(list([left[i]]) if type(left[i]) is int else left[i], list([right[i]]) if type(right[i]) is int else right[i]) if type(left[i]) is list or type(right[i]) is list else (left[i]>right[i])-(left[i]<right[i]), i + 1
+        return good if good else -1 if len(left) < len(right) else 0
+    return [sum([1 + xx for (xx,yy) in enumerate([compare(*[eval(j) for j in i.split("\n")]) for i in open(inputfile).read().split("\n\n")]) if yy!=1]),sum(map(lambda x: (x.index([2])+1)*(x.index([6])+1), [sorted([eval(i) for i in open(inputfile).read().replace("\n\n","\n").split("\n")]+[[2],[6]], key=cmp_to_key(compare))]))][part-1]
+
+def problem13a(inputfile="13.input", part=1):
+    """Problem #13, alternate solution."""
+    def compare(left, right, good=0, i=0):
+        print(reduce(lambda x, y: x if x != 0 else (x[0]<x[1])-(x[0]>x[1]) if type(x[0]) is int and type(x[1]) is int else compare(list([x[0]], x[1])) if type(x[0]) is int else compare(x[0], list([x[1]])) if type(x[1]) is int else compare(x[0], x[1]), list(list(i) for i in zip(left, right)) + [[len(left), len(right)]], 0))
+        while good == 0 and i < len(left): good, i = 1 if len(right) <= i else compare(list([left[i]]) if type(left[i]) is int else left[i], list([right[i]]) if type(right[i]) is int else right[i]) if type(left[i]) is list or type(right[i]) is list else (left[i]>right[i])-(left[i]<right[i]), i + 1
+        return good if good else -1 if len(left) < len(right) else 0
+    return [sum([1 + xx for (xx,yy) in enumerate([compare(*[eval(j) for j in i.split("\n")]) for i in open(inputfile).read().split("\n\n")]) if yy!=1]),sum(map(lambda x: (x.index([2])+1)*(x.index([6])+1), [sorted([eval(i) for i in open(inputfile).read().replace("\n\n","\n").split("\n")]+[[2],[6]], key=cmp_to_key(compare))]))][part-1]
 
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
@@ -485,8 +495,9 @@ TESTDATA = [
     ["Problem_10", problem10, 10, 13140, None, 14820, None],
     ["Problem_11", problem11, 11, 10605, 2713310158, 56595, 15693274740],
     ["Problem_12", problem12, 12, 31, 29, 456, 454],
-    ["Problem_13", problem13, 13, 0, 0, 0, 0],
-]
+    ["Problem_13", problem13, 13, 13, 140, 5675, 20383],
+#    ["Problem_13a", problem13a, 13, 13, 140, 5675, 20383],
+][-1:]
 
 class TestSequence(unittest.TestCase):
     """Passthrough case. Tests added in main."""
