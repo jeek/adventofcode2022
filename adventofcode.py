@@ -447,19 +447,92 @@ def problem12(inputfile="12.input", part=1):
     return best
 
 def problem13(inputfile="13.input", part=1):
-    """Problem #13."""
+    """Problem 13."""
     def compare(left, right, good=0, i=0):
         while good == 0 and i < len(left): good, i = 1 if len(right) <= i else compare(list([left[i]]) if type(left[i]) is int else left[i], list([right[i]]) if type(right[i]) is int else right[i]) if type(left[i]) is list or type(right[i]) is list else (left[i]>right[i])-(left[i]<right[i]), i + 1
         return good if good else -1 if len(left) < len(right) else 0
     return [sum([1 + xx for (xx,yy) in enumerate([compare(*[eval(j) for j in i.split("\n")]) for i in open(inputfile).read().split("\n\n")]) if yy!=1]),sum(map(lambda x: (x.index([2])+1)*(x.index([6])+1), [sorted([eval(i) for i in open(inputfile).read().replace("\n\n","\n").split("\n")]+[[2],[6]], key=cmp_to_key(compare))]))][part-1]
 
-def problem13a(inputfile="13.input", part=1):
-    """Problem #13, alternate solution."""
-    def compare(left, right, good=0, i=0):
-        print(reduce(lambda x, y: x if x != 0 else (x[0]<x[1])-(x[0]>x[1]) if type(x[0]) is int and type(x[1]) is int else compare(list([x[0]], x[1])) if type(x[0]) is int else compare(x[0], list([x[1]])) if type(x[1]) is int else compare(x[0], x[1]), list(list(i) for i in zip(left, right)) + [[len(left), len(right)]], 0))
-        while good == 0 and i < len(left): good, i = 1 if len(right) <= i else compare(list([left[i]]) if type(left[i]) is int else left[i], list([right[i]]) if type(right[i]) is int else right[i]) if type(left[i]) is list or type(right[i]) is list else (left[i]>right[i])-(left[i]<right[i]), i + 1
-        return good if good else -1 if len(left) < len(right) else 0
-    return [sum([1 + xx for (xx,yy) in enumerate([compare(*[eval(j) for j in i.split("\n")]) for i in open(inputfile).read().split("\n\n")]) if yy!=1]),sum(map(lambda x: (x.index([2])+1)*(x.index([6])+1), [sorted([eval(i) for i in open(inputfile).read().replace("\n\n","\n").split("\n")]+[[2],[6]], key=cmp_to_key(compare))]))][part-1]
+def problem14(inputfile="14.input", part=1):
+    """Problem #14."""
+    data = open(inputfile).read().split("\n")
+    grid = defaultdict(lambda: defaultdict(lambda: 0))
+    lowest = 0
+    for ii in data:
+        line = [[int(x) for x in j.split(",")] for j in ii.split("->")]
+        i = 0
+        while i + 1 < len(line):
+            a, b = line[i][0], line[i][1]
+            lowest = max(lowest, b)
+            grid[a][b] = 1
+            if line[i+1][0] > a:
+                while grid[line[i+1][0]][line[i+1][1]] == 0:
+                    grid[a][b] = 1
+                    a += 1
+            else:
+                if line[i+1][0] < a:
+                    while grid[line[i+1][0]][line[i+1][1]] == 0:
+                        grid[a][b] = 1
+                        a -= 1
+                else:
+                    if line[i+1][1] > b:
+                        while grid[line[i+1][0]][line[i+1][1]] == 0:
+                            grid[a][b] = 1
+                            b += 1
+                    else:
+                        while grid[line[i+1][0]][line[i+1][1]] == 0:
+                            grid[a][b] = 1
+                            b -= 1
+            i += 1
+        lowest = max(lowest, b)
+    aa = min(grid.keys())
+    bb = max(grid.keys())
+    done = False
+    count = 0
+    sand = [500,0]
+    while not done:
+        if sand[1] - 1 > lowest:
+            done = True
+        if not done and grid[sand[0]][sand[1]+1] == 0:
+            sand = [sand[0],sand[1]+1]
+        else:
+            if not done and grid[sand[0]-1][sand[1]+1] == 0:
+                sand = [sand[0]-1,sand[1]+1]
+            else:
+                if not done and grid[sand[0]+1][sand[1]+1] == 0:
+                    sand = [sand[0]+1,sand[1]+1]
+                else:
+                    if sand[1] - 1> lowest:
+                        done = True
+                    else:
+                        grid[sand[0]][sand[1]] = 2
+                        sand = [500, 0]
+                        count += 1
+    count2 = 0
+    for i in grid:
+        for j in grid[i]:
+            if grid[i][j] == 2:
+                count2 += 1
+    if part == 1:
+        return count
+    for z in range(aa - lowest - lowest, bb + lowest + lowest):
+        grid[z][lowest + 2] = 1
+    sand = [500,0]
+    while grid[500][0] == 0:
+        done = False
+        if not done and grid[sand[0]][sand[1]+1] == 0:
+            sand = [sand[0],sand[1]+1]
+        else:
+            if not done and grid[sand[0]-1][sand[1]+1] == 0:
+                sand = [sand[0]-1,sand[1]+1]
+            else:
+                if not done and grid[sand[0]+1][sand[1]+1] == 0:
+                    sand = [sand[0]+1,sand[1]+1]
+                else:
+                        grid[sand[0]][sand[1]] = 2
+                        sand = [500, 0]
+                        count += 1
+    return count
 
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
@@ -496,8 +569,8 @@ TESTDATA = [
     ["Problem_11", problem11, 11, 10605, 2713310158, 56595, 15693274740],
     ["Problem_12", problem12, 12, 31, 29, 456, 454],
     ["Problem_13", problem13, 13, 13, 140, 5675, 20383],
-#    ["Problem_13a", problem13a, 13, 13, 140, 5675, 20383],
-][-1:]
+    ["Problem_14", problem14, 14, 24, 93, 1199, 23925],
+]
 
 class TestSequence(unittest.TestCase):
     """Passthrough case. Tests added in main."""
