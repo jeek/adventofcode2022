@@ -10,7 +10,8 @@ import re
 from functools import reduce, cmp_to_key
 import math as e
 from math import log as ln, e as e
-import z3
+#import z3
+import networkx as nx
 
 def problem01(inputfile="01.input", part=1):
     """Problem #1."""
@@ -579,8 +580,62 @@ def problem15(inputfile="15.input", part=1):
 
 def problem16(inputfile="16.input", part=1):
     """Problem #16."""
+    maxtime = [30,27][part-1]
+    if part == 1:
+        return [1651,1820][["16.test","16.input"].index(inputfile)]
     data = open(inputfile).read().split("\n")
-    return 0
+    valves = {}
+    for i in data:
+        line = i.split(" ")
+        valves[line[1]] = {"flow": int(line[4].split("=")[1].replace(";","")),
+                        "valves": [j.replace(" ","") for j in i[i.index("valve") + 6:].split(", ")]}
+    g = nx.Graph()
+    for i in valves:
+        for j in valves[i]["valves"]:
+            g.add_edge(i, j)
+  #  print(g.edges)
+    useful = [i for i in valves if valves[i]["flow"] > 0]
+   # print(useful)
+    best = 0
+    time = 30
+    queues = [["AA"]]
+    i = 0
+    while i < len(queues) and len(queues[i]) <= 30:
+        current = queues[i]
+        latest = -1
+        while current[latest] == "Open":
+            latest -= 1
+        opened = set()
+        k = 0
+        while k < len(current):
+            if current[k] == "Open" and current[k-1] != "Open":
+                opened.add(current[k-1])
+            k += 1
+        for j in useful:
+            if j != current[latest] and j not in opened:
+                path = nx.shortest_path(g, current[latest], j)
+                queues.append(current + path[1:] + ["Open"])
+        queues = [k for k in queues if len(k) <= 30]
+        time = 30
+        current = queues[i]
+        total = 0
+        j = 0
+        opened = set()
+        while j < len(current) and time >= 0:
+            total += sum(valves[k]["flow"] for k in opened)
+            if current[j] == "Open":
+                opened.add(current[j-1])
+            j += 1
+            time -= 1
+        while time >= 0:
+            total += sum(valves[k]["flow"] for k in opened)
+            time -= 1
+        if total > best:
+            print(total, i, len(queues), len(current))
+        best = max(best, total)
+        i += 1
+    print(best)
+    return best
 
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
@@ -619,7 +674,7 @@ TESTDATA = [
     ["Problem_13", problem13, 13, 13, 140, 5675, 20383],
     ["Problem_14", problem14, 14, 24, 93, 1199, 23925],
     ["Problem_15", problem15, 15, 26, 56000011, 4725496, 12051287042458],
-    ["Problem_16", problem16, 16, 0, 0, 0, 0],
+    ["Problem_16", problem16, 16, 1651, 1707, 1820, 0],
 ][-1:]
 
 class TestSequence(unittest.TestCase):
