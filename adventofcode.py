@@ -10,6 +10,7 @@ import re
 from functools import reduce, cmp_to_key
 import math as e
 from math import log as ln, e as e
+import z3
 
 def problem01(inputfile="01.input", part=1):
     """Problem #1."""
@@ -534,6 +535,48 @@ def problem14(inputfile="14.input", part=1):
                         count += 1
     return count
 
+def problem15(inputfile="15.input", part=1):
+    """Problem #15."""
+    data = open(inputfile).read().split("\n")
+    goal = 0
+    if inputfile=="15.test":
+        goal = 10
+    else:
+        goal = 2000000
+    gmax = goal * 2
+    x = z3.Int('x')
+    y = z3.Int('y')
+    s = z3.Solver()
+    s.add(x >= 0)
+    s.add(x <= gmax)
+    s.add(y >= 0)
+    s.add(y <= gmax)
+    grid = defaultdict(lambda: defaultdict(lambda: "."))
+    for i in data:
+        words = i.split(" ")
+        a,b,c,d = words[2], words[3], words[8], words[9]
+        a = int(a.replace(",","").replace(":","").split("=")[1])
+        b = int(b.replace(",","").replace(":","").split("=")[1])
+        c = int(c.replace(",","").replace(":","").split("=")[1])
+        d = int(d.replace(",","").replace(":","").split("=")[1])
+        dist = (abs(c-a)+abs(d-b))
+        if part == 1:
+            for jj in range(a-dist, a+dist+1):
+                ii = goal
+                if (abs(ii-b)+abs(jj-a)) <= dist:
+                    if grid != "B":
+                        grid[ii][jj] = "#"
+            grid[d][c] = "B"
+            grid[b][a] = "S"
+        if part == 2:
+            s.add(z3.Abs(x-a)+z3.Abs(y-b)>dist)
+    if part==1:
+        return len([k for k in grid[ii].values() if k=="#"])
+    s.check()
+    m = s.model()
+    return m[x].as_long()*4000000+m[y].as_long()
+
+
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
     ["Problem_02", problem02, 2, 15, 12, 11150, 8295],
@@ -570,7 +613,8 @@ TESTDATA = [
     ["Problem_12", problem12, 12, 31, 29, 456, 454],
     ["Problem_13", problem13, 13, 13, 140, 5675, 20383],
     ["Problem_14", problem14, 14, 24, 93, 1199, 23925],
-]
+    ["Problem_15", problem15, 15, 26, 56000011, 4725496, 12051287042458],
+][-1:]
 
 class TestSequence(unittest.TestCase):
     """Passthrough case. Tests added in main."""
