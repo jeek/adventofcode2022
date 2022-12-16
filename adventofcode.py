@@ -543,14 +543,15 @@ def problem15(inputfile="15.input", part=1):
         goal = 10
     else:
         goal = 2000000
-    gmax = goal * 2
-    x = z3.Int('x')
-    y = z3.Int('y')
-    s = z3.Solver()
-    s.add(x >= 0)
-    s.add(x <= gmax)
-    s.add(y >= 0)
-    s.add(y <= gmax)
+    if part == 2:
+        gmax = goal * 2
+        x = z3.Int('x')
+        y = z3.Int('y')
+        s = z3.Solver()
+        s.add(x >= 0)
+        s.add(x <= gmax)
+        s.add(y >= 0)
+        s.add(y <= gmax)
     grid = defaultdict(lambda: defaultdict(lambda: "."))
     for i in data:
         words = i.split(" ")
@@ -576,6 +577,10 @@ def problem15(inputfile="15.input", part=1):
     m = s.model()
     return m[x].as_long()*4000000+m[y].as_long()
 
+def problem16(inputfile="16.input", part=1):
+    """Problem #16."""
+    data = open(inputfile).read().split("\n")
+    return 0
 
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
@@ -614,6 +619,7 @@ TESTDATA = [
     ["Problem_13", problem13, 13, 13, 140, 5675, 20383],
     ["Problem_14", problem14, 14, 24, 93, 1199, 23925],
     ["Problem_15", problem15, 15, 26, 56000011, 4725496, 12051287042458],
+    ["Problem_16", problem16, 16, 0, 0, 0, 0],
 ][-1:]
 
 class TestSequence(unittest.TestCase):
