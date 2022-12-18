@@ -1,5 +1,6 @@
 """Advent of Code 2022."""
 
+import fractions
 import unittest
 import string
 from collections import defaultdict
@@ -580,62 +581,113 @@ def problem15(inputfile="15.input", part=1):
 
 def problem16(inputfile="16.input", part=1):
     """Problem #16."""
-    maxtime = [30,27][part-1]
-    if part == 1:
-        return [1651,1820][["16.test","16.input"].index(inputfile)]
-    data = open(inputfile).read().split("\n")
-    valves = {}
+    data, valves, g = open(inputfile).read().split("\n"), {}, nx.Graph()
     for i in data:
-        line = i.split(" ")
-        valves[line[1]] = {"flow": int(line[4].split("=")[1].replace(";","")),
-                        "valves": [j.replace(" ","") for j in i[i.index("valve") + 6:].split(", ")]}
-    g = nx.Graph()
-    for i in valves:
-        for j in valves[i]["valves"]:
-            g.add_edge(i, j)
-  #  print(g.edges)
-    useful = [i for i in valves if valves[i]["flow"] > 0]
-   # print(useful)
-    best = 0
-    time = 30
-    queues = [["AA"]]
-    i = 0
-    while i < len(queues) and len(queues[i]) <= 30:
-        current = queues[i]
-        latest = -1
-        while current[latest] == "Open":
-            latest -= 1
-        opened = set()
-        k = 0
-        while k < len(current):
-            if current[k] == "Open" and current[k-1] != "Open":
-                opened.add(current[k-1])
-            k += 1
-        for j in useful:
-            if j != current[latest] and j not in opened:
-                path = nx.shortest_path(g, current[latest], j)
-                queues.append(current + path[1:] + ["Open"])
-        queues = [k for k in queues if len(k) <= 30]
-        time = 30
-        current = queues[i]
-        total = 0
-        j = 0
-        opened = set()
-        while j < len(current) and time >= 0:
-            total += sum(valves[k]["flow"] for k in opened)
-            if current[j] == "Open":
-                opened.add(current[j-1])
-            j += 1
-            time -= 1
+        valves[i.split(" ")[1]] = {"flow": int(i.split(" ")[4].split("=")[1].replace(";","")), "valves": [j.replace(" ","") for j in i[i.index("valve") + 6:].split(", ")]}
+        for j in valves[i.split(" ")[1]]["valves"]: g.add_edge(i.split(" ")[1], j)
+    useful, best, queues, bestd, i = [i for i in valves if valves[i]["flow"] > 0], 0, [["AA"]], defaultdict(int), 0
+    while i < len(queues):
+        current, time, total, j, opened = queues[i], [30,26][part-1], 0, 0, set()
         while time >= 0:
             total += sum(valves[k]["flow"] for k in opened)
+            if j < len(current):
+                if current[j] == "Open": opened.add(current[j-1])
+                j += 1
             time -= 1
-        if total > best:
-            print(total, i, len(queues), len(current))
-        best = max(best, total)
+        bestd[tuple(sorted(opened))], latest = max(bestd[tuple(sorted(opened))], total), -1
+        while current[latest] == "Open": latest -= 1
+        opened, k = set(), 0
+        while k < len(current):
+            if current[k] == "Open" and current[k-1] != "Open": opened.add(current[k-1])
+            k += 1
+        for j in [k for k in useful if k not in opened]:
+            temp = (current + nx.shortest_path(g, current[latest], j)[1:] + ["Open"])[:32-4*part]
+            if (temp != current) and temp[-1] == "Open": queues.append(temp)
         i += 1
-    print(best)
+    if part == 1: return max(bestd.values())
+    for i, j in product(bestd, bestd):
+        if set(i)&set(j)==set():
+            best = max(best, bestd[i] + bestd[j])
     return best
+
+def problem17(inputfile="17.input", part=1):
+    """Problem #17."""
+    jets = [i for i in open(inputfile).read()]
+   # print(jets)
+    grid = [[0,0,0,0,0,0,0] for j in range(10000000)]
+    rocks = [i[::-1] for i in [[[1,1,1,1]],[[0,1,0],[1,1,1],[0,1,0]],[[0,0,1],[0,0,1],[1,1,1]],[[1],[1],[1],[1]],[[1,1],[1,1]]]]
+    oh = []
+    k = 0
+    jj = 0
+    highest = 0
+    while k < 2022 * part:
+        pos = [3 + highest, 2]
+        highest = max(0, highest)
+        rock = rocks[k%5]
+        rw, rh = len(rock[0]), len(rock)
+        goodtomoveup = True
+        while goodtomoveup == True:
+            if (jets[jj] == "<" and pos[1] > 0) or (jets[jj] == ">" and pos[1]+rw < 7):
+                goodtomoveside = True
+                try:
+                  for i in range(rh):
+                    for j in range(rw):
+                        if grid[pos[0]+i][pos[1] + (1 if jets[jj] == ">" else -1) +j] == 1 and rock[i][j] == 1:
+                            goodtomoveside = False
+                except:
+                    goodtomoveside = False
+                pos[1] = max(pos[1], 0)
+                pos[1] = min(pos[1], 7 - rw)
+                if goodtomoveside == True:
+                    pos[1] = pos[1] + (-1 if jets[jj] == "<" else 1)
+                pos[1] = min(pos[1], 7 - rw)
+                pos[1] = max(pos[1], 0)
+            jj = (jj + 1) % len(jets)
+            for i in range(rh):
+                for j in range(rw):
+                    try:
+                        if grid[pos[0]-1+i][pos[1]+j] == 1 and rock[i][j] == 1:
+                            goodtomoveup = False
+                    except:
+                        goodtomoveup = False
+            if pos[0] <= 0:
+                pos[0] = 0
+                goodtomoveup = False
+            if goodtomoveup == True:
+                pos[0] -= 1
+        for i in range(rh):
+            for j in range(rw):
+                if rock[i][j]:
+                    grid[pos[0] + i][pos[1]+j] = 1
+        old = highest
+        while grid[highest].count(1) > 0:
+            highest += 1
+        oh.append(highest - old)
+        k += 1
+    if part == 1:
+        return highest
+    done = False
+    z = 15
+    while not done:
+        done = True    
+        for zz in range(1, z+1):
+            if oh[len(oh)-zz] != oh[len(oh)-zz-z]:
+                done = False
+        z += 1
+    z -= 1
+    a = len(oh) - 1
+    while a % z != 1000000000000 % z:
+        a -= 1
+    x1, x2 = a - z, a
+    y1, y2 = sum(oh[:x1]), sum(oh[:x2])
+    m = fractions.Fraction(y2-y1,x2-x1)
+    b = 0
+    while m * x1 + fractions.Fraction(b,x2-x1) > y1:
+        b -= 1
+    while m * x1 + fractions.Fraction(b,x2-x1) < y1:
+        b += 1
+    print(b, x2-x1)
+    return m*1000000000000+fractions.Fraction(b, x2-x1)
 
 TESTDATA = [
     ["Problem_01", problem01, 1, 24000, 45000, 68802, 205370],
@@ -674,7 +726,8 @@ TESTDATA = [
     ["Problem_13", problem13, 13, 13, 140, 5675, 20383],
     ["Problem_14", problem14, 14, 24, 93, 1199, 23925],
     ["Problem_15", problem15, 15, 26, 56000011, 4725496, 12051287042458],
-    ["Problem_16", problem16, 16, 1651, 1707, 1820, 0],
+    ["Problem_16", problem16, 16, 1651, 1707, 1820, 2602],
+    ["Problem_17", problem17, 17, 3068, 1514285714288, 3206, 1602881844347],
 ][-1:]
 
 class TestSequence(unittest.TestCase):
